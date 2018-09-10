@@ -1,0 +1,1 @@
+SELECT if(model regexp '^([A-z]*|[0-9]*)$product', model, null)  FROM bd.product;
