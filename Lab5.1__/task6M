@@ -87,4 +87,3 @@ FROM
                                 laptop) AS m ON m.m = laptop.ram))
                     AND type = 'Printer')
             AND m IS NOT NULL) AS C
-		
