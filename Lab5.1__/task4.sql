@@ -12,3 +12,26 @@ FROM
     ORDER BY d.code) AS sub ON sub.code = PC.code
 GROUP BY sub.group;
 
+ SELECT 
+    IF(B.num % 6 = 0, PC.code, '') AS groupCode, AVG(PC.price)
+FROM
+    pc AS PC
+        JOIN
+    (SELECT 
+        (SELECT 
+                    COUNT(*)
+                FROM
+                    PC
+                WHERE
+                    code < A.code) AS num,
+            (SELECT 
+                    COUNT(*)
+                FROM
+                    PC
+                WHERE
+                    code < A.code) DIV 6 AS 'group',
+            code
+    FROM
+        PC AS A
+    ORDER BY code) AS B ON PC.code = B.code
+GROUP BY B.group
