@@ -21,3 +21,25 @@ FROM
 				ON Printer.model = Product.model
     GROUP BY priceD) AS subQ
 GROUP BY subQ.maker
+	   
+SELECT 
+    maker,
+    SUM(IF(B.count = 1, 0, 1)),
+    SUM(IF(B.count = 1, 0, B.count))
+FROM
+    (SELECT 
+        maker, price, COUNT(price) AS count
+    FROM
+        product AS P
+    JOIN (SELECT 
+        model, price
+    FROM
+        pc UNION ALL SELECT 
+        model, price
+    FROM
+        printer UNION ALL SELECT 
+        model, price
+    FROM
+        laptop) AS A ON A.model = P.model
+    GROUP BY price , maker) AS B
+GROUP BY maker
