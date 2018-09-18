@@ -1,89 +1,90 @@
 SELECT 
-    A.a, B.b, C.c
+    AVG(a)
 FROM
     (SELECT 
+        *
+    FROM
+        (SELECT 
         ROUND(AVG(m), 3) a
     FROM
-        laptop
+        Laptop
     JOIN (SELECT 
         MIN(price) AS m
     FROM
-        laptop
-    GROUP BY model) AS y ON y.m = laptop.price
+        Laptop
+    GROUP BY model) AS y ON y.m = Laptop.price
     WHERE
         model IN (SELECT 
                 model
             FROM
-                product
+                Product
             WHERE
-                type = 'laptop'
+                type = 'Laptop'
                     AND maker IN (SELECT 
                         t.maker
                     FROM
-                        pc
+                        PC
                     LEFT JOIN (SELECT 
                         MIN(cd) AS min
                     FROM
                         PC) AS min ON min.min = PC.cd
-                    LEFT JOIN product AS t ON PC.model = t.model))
-            AND m IS NOT NULL) AS A,
-    (SELECT 
-        ROUND(AVG(price), 3) b
+                    LEFT JOIN Product AS t ON PC.model = t.model))
+            AND m IS NOT NULL) AS A UNION (SELECT 
+        ROUND(AVG(price), 3) a
     FROM
-        pc
+        PC
     JOIN (SELECT 
         MAX(price) AS h
     FROM
-        pc
+        PC
     GROUP BY model) AS ss ON price = ss.h
     WHERE
         model IN (SELECT 
                 model
             FROM
-                product
+                Product
             WHERE
                 maker IN (SELECT 
                         maker
                     FROM
-                        product
+                        Product
                     WHERE
                         model IN (SELECT DISTINCT
                                 model
                             FROM
-                                printer
+                                Printer
                             JOIN (SELECT 
                                 MIN(price) AS min
                             FROM
-                                printer) AS sub ON price = sub.min))
+                                Printer) AS sub ON price = sub.min))
                     AND type = 'PC')
-            AND h IS NOT NULL) AS B,
-    (SELECT 
-        ROUND(AVG(price), 3) AS c
+            AND h IS NOT NULL) UNION (SELECT 
+        ROUND(AVG(price), 3) AS a
     FROM
-        printer
+        Printer
     JOIN (SELECT 
         MAX(price) AS m
     FROM
-        printer
-    GROUP BY model) AS r ON r.m = printer.price
+        Printer
+    GROUP BY model) AS r ON r.m = Printer.price
     WHERE
         model IN (SELECT 
                 model
             FROM
-                product
+                Product
             WHERE
                 maker IN (SELECT 
                         maker
                     FROM
-                        product
+                        Product
                     WHERE
                         model IN (SELECT 
                                 model
                             FROM
-                                laptop
+                                Laptop
                             JOIN (SELECT 
                                 MAX(ram) AS m
                             FROM
-                                laptop) AS m ON m.m = laptop.ram))
+                                Laptop) AS m ON m.m = Laptop.ram))
                     AND type = 'Printer')
-            AND m IS NOT NULL) AS C
+            AND m IS NOT NULL)) AS D
